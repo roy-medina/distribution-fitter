@@ -52,9 +52,9 @@ clean_values = values[values >= lower_limit & values <=upper_limit]
 
 hist(clean_values)
 
-options(show.error.messages = FALSE)# TRUE IF YOU WANT TO SEE ERRORS
+options(show.error.messages = TRUE)# TRUE IF YOU WANT TO SEE ERRORS OR FALSE TO NOT SEE IT
 try(Random.Triangular <- fitdist(clean_values, "triang", method="mge", start = list(min=min(clean_values), mode=mode(clean_values),max=max(clean_values)), gof="KS"), silent = TRUE)
-try(Random.Weibull <- fitdist(clean_values, "weibull",lower = c(0, 0)))
+#try(Random.Weibull <- fitdist(clean_values, "weibull",lower = c(0, 0))) # Weibuull is too much fitting - Use as last resort
 try(Random.Normal <- fitdist(clean_values, "norm"))
 try(Random.Gamma <- fitdist(clean_values, "gamma",lower = c(0, 0)))
 try(Random.Lognormal <- fitdist(clean_values, "lnorm"))
@@ -62,20 +62,26 @@ try(Random.Lognormal <- fitdist(clean_values, "lnorm"))
 try(Random.Exponential <- fitdist(clean_values, "exp"), silent=TRUE)
 try(Random.LogLogistic <- fitdist(clean_values, "logis"))
 
-### INCLUDE ALL ##
+### ABS INCLUDE ALL ## # Don't recommend ABS
 fits = c('Random.Triangular','Random.Weibull','Random.Normal','Random.Lognormal','Random.Gamma','Random.Poisson','Random.LogLogistic')
-aic = c(Random.Triangular$aic,Random.Weibull$aic,Random.Normal$aic,Random.Lognormal$aic,Random.Gamma$aic,Random.Poisson$aic,Random.LogLogistic$aic)
+aic = c(abs(Random.Triangular$aic),abs(Random.Weibull$aic),abs(Random.Normal$aic),abs(Random.Lognormal$aic),abs(Random.Gamma$aic),abs(Random.Poisson$aic),abs(Random.LogLogistic$aic))
 ######################
 
-### EXCLUDE POISSON ##
+### ABS EXCLUDE POISSON ## # Don't recommend ABS
 fits = c('Random.Triangular','Random.Weibull','Random.Normal','Random.Lognormal','Random.Gamma','Random.LogLogistic')
-aic = c(Random.Triangular$aic,Random.Weibull$aic,Random.Normal$aic,Random.Lognormal$aic,Random.Gamma$aic,Random.LogLogistic$aic)
+aic = c(abs(Random.Triangular$aic),abs(Random.Weibull$aic),abs(Random.Normal$aic),abs(Random.Lognormal$aic),abs(Random.Gamma$aic),abs(Random.LogLogistic$aic))
 ######################
 
-### EXCLUDE POISSON AND WEIBULL ##
-fits = c('Random.Triangular','Random.Normal','Random.Lognormal','Random.Gamma','Random.LogLogistic')
-aic = c(Random.Triangular$aic,Random.Normal$aic,Random.Lognormal$aic,Random.Gamma$aic,Random.LogLogistic$aic)
+### ABS EXCLUDE POISSON AND WEIBULL ## # Don't recommend ABS
+fits = c('Random.Triangular','Random.Normal','Random.Lognormal','Random.Exponential', 'Random.Gamma','Random.LogLogistic')
+aic = c(abs(Random.Triangular$aic),abs(Random.Normal$aic),abs(Random.Lognormal$aic),abs(Random.Exponential$aic),abs(Random.Gamma$aic),abs(Random.LogLogistic$aic))
 ######################
+
+###  EXCLUDE POISSON AND WEIBULL ##  ## RECOMMEND TO RUN
+fits = c('Random.Triangular','Random.Normal','Random.Lognormal','Random.Exponential', 'Random.Gamma','Random.LogLogistic')
+aic = c(Random.Triangular$aic,Random.Normal$aic,Random.Lognormal$aic,Random.Exponential$aic,Random.Gamma$aic,Random.LogLogistic$aic)
+######################
+
 
 dist_aic = min(aic,na.rm = TRUE)
 
